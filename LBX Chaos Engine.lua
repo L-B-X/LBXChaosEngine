@@ -3475,7 +3475,7 @@ end
                 end
                 update_gfx = true
               end
-          elseif butt_cnt-2 < #preset[last_M][fxidx].params then
+          elseif butt_cnt ~= nil and butt_cnt-2 < #preset[last_M][fxidx].params then
             if mouse.my >= gfx1.main_h - butt_h then
               plist_offset = plist_offset + (butt_cnt-2)
               if plist_offset + (butt_cnt - 2) > #preset[last_M][fxidx].params then
