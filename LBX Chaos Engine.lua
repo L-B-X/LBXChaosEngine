@@ -1,4 +1,4 @@
--- * ReaScript Name: LBX Chaos Engine
+  -- * ReaScript Name: LBX Chaos Engine
 
 -- @version 0.92
 -- @author LBX - with original code from mpl
@@ -752,7 +752,37 @@ end
                          y = obj.sections[4].y + obj.sections[4].h + 4,
                          w = obj.sections[4].w,
                          h = obj.sections[5].y - (obj.sections[4].y + obj.sections[4].h + 4)}
+                         
+    --Print Sequence
+    obj.sections[121] = {x = obj.sections[4].x + 4,
+                         y = obj.sections[4].y,
+                         w = 90,
+                         h = 16}
+    local pw,ph, butt_h = 500, 130, 20 --(obj.sections[5].y + obj.sections[5].h) - obj.sections[4].y
+    obj.sections[122] = {x = (obj.sections[4].x + obj.sections[4].w/2) - pw/2,
+                         y = (obj.sections[4].y + (((obj.sections[5].y + obj.sections[5].h) - obj.sections[4].y)/2)) - ph/2  ,
+                         w = pw,
+                         h = ph}
+
     
+    obj.sections[123] = {x = obj.sections[122].x + 120,
+                             y = obj.sections[122].y + 20,
+                             w = 150,
+                             h = butt_h}    
+    obj.sections[124] = {x = obj.sections[122].x + 120,
+                             y = obj.sections[122].y + 55,
+                             w = 75,
+                             h = butt_h}    
+    obj.sections[125] = {x = obj.sections[122].x + 120,
+                             y = obj.sections[122].y + 90,
+                             w = 75,
+                             h = butt_h}    
+
+    obj.sections[126] = {x = obj.sections[122].x + 300,
+                             y = obj.sections[122].y + 55,
+                             w = 170,
+                             h = butt_h*2}    
+
     return obj
   end
   
@@ -1436,7 +1466,7 @@ end
         end      
         
         c = gui.color.white
-        if seq_state == 1 then
+        if seq_state >= 1 then
           f_Get_SSV(gui.color.green1)
           c = gui.color.black
         else
@@ -1489,7 +1519,7 @@ end
                  obj.sections[108].y + obj.sections[108].h/2 - size/2,
                  size, size)
         
-        if seq_state == 1 then
+        if seq_state >= 1 then
 
           local c = gui.color.white
           if seq[last_M][seq[last_M].selected].loop then
@@ -1568,7 +1598,7 @@ end
       end
         --   
       
-      if update_gfx or update_morph or update_slots or update_seq or update_seqgrid or update_seqplay or update_disp or update_misc then
+      if update_gfx or update_morph or update_slots or update_seq or update_seqgrid or update_seqplay or update_disp or update_misc or update_print then
   
         if not update_gfx then       
           gfx.dest = 1
@@ -1783,10 +1813,6 @@ end
         if seq_state == 0 then
           gfx.a = 1
           f_Get_SSV(gui.color.black)
-          --[[gfx.rect(obj.sections[4].x ,
-                          obj.sections[4].y-4, 
-                          obj.sections[4].w,
-                          obj.sections[5].y + obj.sections[5].h - obj.sections[4].y +8, true)]]
           gfx.rect(obj.sections[4].x ,
                     obj.sections[4].y-4, 
                     obj.sections[4].w,
@@ -1881,7 +1907,7 @@ end
               end    
             --end
           end
-        else --seq
+        elseif seq_state == 1 or seq_state == 2 then --seq
 
           if update_gfx or update_seqplay then
             local i, c
@@ -2016,6 +2042,120 @@ end
             end
           end          
         
+          if seq_state == 2 then
+          
+            if update_gfx or update_seqgrid then
+              gfx.a = 0.7
+              f_Get_SSV(gui.color.black)
+              gfx.rect(obj.sections[4].x ,
+                      obj.sections[4].y-4, 
+                      obj.sections[4].w,
+                      obj.sections[5].y + obj.sections[5].h - obj.sections[4].y +8, true)          
+            end
+            if update_seq then
+              gfx.a = 0.7
+              f_Get_SSV(gui.color.black)
+              local xywh = {x = x, y = obj.sections[102].y - 18, w = obj.sections[102].w, h = 18}
+              gfx.rect(xywh.x ,
+                      xywh.y, 
+                      xywh.w,
+                      xywh.h, true)
+            end
+            
+            if update_gfx or update_seqgrid or update_seq or update_print then
+            
+              gfx.a = 1
+              f_Get_SSV(gui.color.black)
+              roundrect(obj.sections[122].x ,
+                        obj.sections[122].y, 
+                        obj.sections[122].w,
+                        obj.sections[122].h, 4, 1, 1)
+              f_Get_SSV(gui.color.blue1)
+              roundrect(obj.sections[122].x,
+                        obj.sections[122].y, 
+                        obj.sections[122].w,
+                        obj.sections[122].h, 4, 1, 0)
+            
+              xywh = {x = obj.sections[123].x - 120, y = obj.sections[123].y, w = 120, h = obj.sections[123].h}
+              GUI_textC_FIT_RJ(gui, xywh, 'QUALITY', gui.color.blue, 14, 10)
+              xywh.y = obj.sections[124].y
+              GUI_textC_FIT_RJ(gui, xywh, 'LENGTH DIVISOR', gui.color.blue, 14, 10)
+              xywh.y = obj.sections[125].y
+              GUI_textC_FIT_RJ(gui, xywh, 'LENGTH MULTIPLIER', gui.color.blue, 14, 10)
+              
+              local ww = obj.sections[123].w * print_quality
+              f_Get_SSV(gui.color.dblue1)
+              gfx.rect(obj.sections[123].x,obj.sections[123].y,obj.sections[123].w,obj.sections[123].h,1)
+              f_Get_SSV(gui.color.blue1)
+              gfx.rect(obj.sections[123].x,obj.sections[123].y,ww,obj.sections[123].h,1)
+              local c = gui.color.white
+              if print_quality >= 0.6 then
+                c = gui.color.black
+              end
+              GUI_textC(gui, obj.sections[123], math.floor(print_quality*100) .. "%", c, -4)
+              
+              f_Get_SSV(gui.color.blue1)
+              gfx.rect(obj.sections[124].x,obj.sections[124].y,obj.sections[124].w,obj.sections[124].h,1)
+              GUI_textC(gui, obj.sections[124], sync_table[print_lendiv], gui.color.black, -4)
+
+              f_Get_SSV(gui.color.blue1)
+              gfx.rect(obj.sections[125].x,obj.sections[125].y,obj.sections[125].w,obj.sections[125].h,1)
+              GUI_textC(gui, obj.sections[125], print_lenmult, gui.color.black, -4)
+
+              f_Get_SSV(gui.color.blue)
+              gfx.rect(obj.sections[126].x,obj.sections[126].y,obj.sections[126].w,obj.sections[126].h,1)
+              GUI_textC(gui, obj.sections[126], 'PRINT SEQUENCE', gui.color.black, -4)
+            
+            end
+            
+          end
+
+          --if update_gfx then
+          gfx.a = 1
+          local c = gui.color.blue
+          f_Get_SSV(gui.color.blue1)
+          if seq_state == 1 then
+            roundrect(obj.sections[121].x,
+                     obj.sections[121].y,
+                     obj.sections[121].w,
+                     obj.sections[121].h, 1, 1, 0)
+          else
+            roundrect(obj.sections[121].x,
+                     obj.sections[121].y,
+                     obj.sections[121].w,
+                     obj.sections[121].h, 1, 1, 1)
+            c = gui.color.black
+          end
+          GUI_textC_FIT(gui, obj.sections[121], 'PRINT SEQUENCE', c, 14)
+          --end
+          
+        
+--[[        elseif seq_state == 2 then
+
+          if update_gfx then
+
+            f_Get_SSV(gui.color.black)
+            gfx.rect(obj.sections[4].x ,
+                            obj.sections[4].y-4, 
+                            obj.sections[4].w,
+                            obj.sections[5].y + obj.sections[5].h - obj.sections[4].y +8, true)
+            f_Get_SSV(gui.color.green_dark1)
+            gfx.rect(obj.sections[4].x ,
+                            obj.sections[4].y-6, 
+                            obj.sections[4].w,
+                            1, true)
+            gfx.rect(obj.sections[4].x ,
+                            obj.sections[5].y + obj.sections[5].h + 4, 
+                            obj.sections[4].w,
+                            1, true)
+
+            f_Get_SSV(gui.color.blue1)
+            gfx.rect(obj.sections[121].x,
+                     obj.sections[121].y,
+                     obj.sections[121].w,
+                     obj.sections[121].h, false)
+          end]]
+          
         end
                 
         -- val      
@@ -2335,6 +2475,7 @@ end
     update_seqplay = false    
     update_disp = false
     update_misc = false
+    update_print = false
     
   end
   
@@ -2664,14 +2805,14 @@ end
   
   ------------------------------------------------------------
   
-  function ENGINE_SetParams(last_M)
+  function ENGINE_SetParams(last_M, rt, print)
   
     local fxidx
     local mp, mpv 
     local resetmt = false
 
     if morphtime[last_M] ~= nil then
-      local rt = reaper.time_precise()
+      --local rt = reaper.time_precise()
       mp = F_limit((rt - morphtime[last_M].st) / ((morphtime[last_M].et - morphtime[last_M].st)),0,1)
       mpv = CalcShapeVal(last_M, mp, rt - morphtime[last_M].st, (morphtime[last_M].et - morphtime[last_M].st))
       --if mpv == preset[last_M].mp then return end 
@@ -2713,7 +2854,6 @@ end
         end      
       end
       if found then
-         max_params_count = 200
           if preset[last_M][fxidx].param_actidx ~= nil then
             if morph_time[last_M] == 0 then
               for i = 1, math.min(#preset[last_M][fxidx].param_actidx, max_params_count) do
@@ -2766,7 +2906,7 @@ end
         else
           preset[last_M].use_params2 = morphtime[last_M].eslot        
         end
-        ENGINE_SetParams(last_M) --ensure final morph settings are sent to plugin
+        ENGINE_SetParams(last_M, reaper.time_precise(), false) --ensure final morph settings are sent to plugin
       else
         --if not seq[last_M].running then
           if preset[last_M].settings_morphrebound then
@@ -2875,15 +3015,21 @@ end
     end
   end 
   
+  ------------------------------------------------------------
+  
   function RunSequences(rt)
   
+    if rt == nil then
+      rt = reaper.time_precise()      
+    end
+    
   --SEQUENCE
   local i
   for i = 1, #seq do
     if seq[i].running > 0 then
     
-      --if rt < seq[i].stepet then
-      if reaper.time_precise() < seq[i].stepet then       
+      if rt < seq[i].stepet then
+      --if reaper.time_precise() < seq[i].stepet then       
       else
         seq[i].currentstep = seq[i].currentstep + 1
         
@@ -2893,7 +3039,6 @@ end
             seq[i].currentstep = 1
             seq[i].stepst = seq[i].stepet
             seq[i].stepet = seq[i].stepet + (CalcSyncTime(seq[i][seq[i].running][seq[i].currentstep].steplength) * seq_speedmult[seq[i][seq[i].running].speedmult])
-            --seq[i].ostepet = seq[i].stepet
             
             preset[i].settings_morphrebound = seq[i][seq[i].running][seq[i].currentstep].steprebound
             preset[i].morph_shape = seq[i][seq[i].running][seq[i].currentstep].stepshape
@@ -2913,13 +3058,8 @@ end
             else
               neweslot = newsslot
             end
-            --[[morphtime[i] = {st = rt,
-                            et = rt + morph_time[i],
-                            sslot = newsslot,
-                            eslot = neweslot}]]
               morphtime[i] = {st = seq[i].stepst,
                               et = seq[i].stepst + morph_time[i],
-                              --oet = seq[i].stepst + morph_time[i],
                               sslot = newsslot,
                               eslot = neweslot}
           else
@@ -2931,7 +3071,6 @@ end
         else
           seq[i].stepst = seq[i].stepet
           seq[i].stepet = seq[i].stepet + (CalcSyncTime(seq[i][seq[i].running][seq[i].currentstep].steplength) * seq_speedmult[seq[i][seq[i].running].speedmult])
-          --seq[i].ostepet = seq[i].stepet
           
           preset[i].settings_morphrebound = seq[i][seq[i].running][seq[i].currentstep].steprebound
           preset[i].morph_shape = seq[i][seq[i].running][seq[i].currentstep].stepshape
@@ -2959,7 +3098,6 @@ end
   
           morphtime[i] = {st = seq[i].stepst,
                            et = seq[i].stepst + morph_time[i],
-                           --oet = seq[i].stepst + morph_time[i],
                            sslot = newsslot,
                            eslot = neweslot}
         end
@@ -3120,6 +3258,7 @@ end
         for i = 1, 16 do
           morph_time[i] = 0
           seq[i].running = 0
+          chaos_start = nil
           
           --ENGINE_SetParams()
           if morphtime[i] then
@@ -3322,7 +3461,7 @@ end
         
       end
       
-      RunSequences(rt3)    
+      RunSequences()    
       
      -- Slot
      if MOUSE_click(obj.sections[66]) then
@@ -3331,7 +3470,7 @@ end
       if preset[last_M][1] and preset[last_M][1].S_params and preset[last_M][1].S_params[i] ~= nil then 
         preset[last_M].use_params = i
         update_slots = true
-        ENGINE_SetParams(last_M)
+        ENGINE_SetParams(last_M, reaper.time_precise(), false)
       end
      end
      local lb = MOUSE_click(obj.sections[67])
@@ -3345,8 +3484,8 @@ end
           morph_time[last_M] = 0
           preset[last_M].use_params2 = i
           update_slots = true
-          update_gfx = true
-          ENGINE_SetParams(last_M)
+          --update_gfx = true
+          ENGINE_SetParams(last_M, reaper.time_precise(), false)
         else
           --local rt = reaper.time_precise()
           morphtime[last_M] = {st = rt,
@@ -3367,7 +3506,7 @@ end
          if preset[last_M][1] and preset[last_M][1].S_params and preset[last_M][1].S_params[0] ~= nil then 
            preset[last_M].use_params = 0
            update_slots = true 
-           ENGINE_SetParams(last_M)
+           ENGINE_SetParams(last_M, reaper.time_precise(), false)
          end
       end
       local lb = MOUSE_click(obj.sections[41])
@@ -3379,7 +3518,7 @@ end
              morph_time[last_M] = 0 
              preset[last_M].use_params2 = 0
              update_slots = true
-             ENGINE_SetParams(last_M)
+             ENGINE_SetParams(last_M, reaper.time_precise(), false)
            else
              --local rt = reaper.time_precise()
              morphtime[last_M] = {st = rt,
@@ -3571,7 +3710,7 @@ end
               update_gfx = true 
             end          
           end
-          ENGINE_SetParams(last_M)
+          ENGINE_SetParams(last_M, reaper.time_precise(), false)
           disp_notify = 'Preset ' .. last_M .. ' parameters randomized'
         end
   
@@ -3605,7 +3744,7 @@ end
               end
             end          
           end
-          ENGINE_SetParams(last_M)
+          ENGINE_SetParams(last_M, reaper.time_precise(), false)
           disp_notify = 'Preset ' .. last_M .. ' parameters captured from plugin(s)'
           
        end            
@@ -3705,12 +3844,14 @@ end
            local val = F_limit(MOUSE_sliderV(obj.sections[4]),0,1)
            if val ~= nil then
             val = 1-val
-            if preset[last_M][PN_Fxi].S_params ~= nil then
+            if preset[last_M][PN_Fxi].S_params ~= nil and preset[last_M].use_params and preset[last_M][PN_Fxi].S_params[preset[last_M].use_params] then
               if preset[last_M][PN_Fxi].S_params[preset[last_M].use_params][preset[last_M][PN_Fxi].param_actidx[PN_DragIdx]].val ~= val then
                 preset[last_M][PN_Fxi].S_params[preset[last_M].use_params][preset[last_M][PN_Fxi].param_actidx[PN_DragIdx]].val = val
                 update_morph = true
-                ENGINE_SetParams(last_M)
+                ENGINE_SetParams(last_M, reaper.time_precise(), false)
               end          
+            else
+              --check loaded data - as plugin is missing
             end
            end
         end
@@ -3732,13 +3873,15 @@ end
         if mouse.context and mouse.context == 'sliderV2' then
            local val = F_limit(MOUSE_sliderV(obj.sections[5]),0,1)
            if val ~= nil then
-            if preset[last_M][PN_Fxi].S_params ~= nil then
+            if preset[last_M][PN_Fxi].S_params ~= nil and preset[last_M].use_params2 and preset[last_M][PN_Fxi].S_params[preset[last_M].use_params2] then
               val = 1-val
               if preset[last_M][PN_Fxi].S_params[preset[last_M].use_params2][preset[last_M][PN_Fxi].param_actidx[PN_DragIdx]].val ~= val then
                 preset[last_M][PN_Fxi].S_params[preset[last_M].use_params2][preset[last_M][PN_Fxi].param_actidx[PN_DragIdx]].val = val
                 update_morph = true
-                ENGINE_SetParams(last_M)
+                ENGINE_SetParams(last_M, reaper.time_precise(), false)
               end          
+            else
+              --check loaded data - as plugin is missing
             end
           end
         end
@@ -3941,7 +4084,7 @@ end
             end
           elseif val ~= last_morph_val then
             preset[last_M].morph_val = val
-            ENGINE_SetParams(last_M)
+            ENGINE_SetParams(last_M, reaper.time_precise(), false)
             update_morph = true 
             morphset = true
           end
@@ -3996,7 +4139,7 @@ end
         if mouse.context and mouse.context == 'slider' then
            preset[last_M].morph_val = F_limit(MOUSE_slider(obj.sections[76]),0,1)
            if preset[last_M].morph_val ~= last_morph_val then
-            ENGINE_SetParams(last_M)
+            ENGINE_SetParams(last_M, reaper.time_precise(), false)
             update_morph = true
             morphset = true
             reaper.DeleteExtState("LBX_Morph", "MorphValue", false)
@@ -4062,94 +4205,96 @@ end
       end
 
       --SEQUENCE
-      if seq_state == 1 then
-        local steps, butt_h = 32, math.floor(obj.sections[102].h/6)
-        local lb = MOUSE_click(obj.sections[102])
-        local rb = MOUSE_click_RB(obj.sections[102])
-        if MOUSE_click(obj.sections[103]) then
-          local w = ((math.floor(obj.sections[103].w/steps)*steps))
-          local x = math.floor(((mouse.mx - obj.sections[103].x) / w) * steps) +1
-          seq[last_M][seq[last_M].selected].steps = x
-          update_seqgrid = true
-          update_seq = true
-          
-        elseif lb or rb then 
-          local w = ((math.floor(obj.sections[102].w/steps)*steps))
-          local x = math.floor(((mouse.mx - obj.sections[102].x) / w) * steps) +1
-          local y = math.floor((mouse.my - obj.sections[102].y) / (butt_h + 1)) +1
-          if x <= seq[last_M][seq[last_M].selected].steps and y <= 6 then
-            if y == 1 then
-              if rb then
-                seq[last_M][seq[last_M].selected][x].targetslot = seq[last_M][seq[last_M].selected][x].targetslot - 1
-                if seq[last_M][seq[last_M].selected][x].targetslot < 0 then
-                  seq[last_M][seq[last_M].selected][x].targetslot = #seq_step_table-1
+      if seq_state == 1 or seq_state == 2 then
+        if seq_state == 1 then
+          local steps, butt_h = 32, math.floor(obj.sections[102].h/6)
+          local lb = MOUSE_click(obj.sections[102])
+          local rb = MOUSE_click_RB(obj.sections[102])
+          if MOUSE_click(obj.sections[103]) then
+            local w = ((math.floor(obj.sections[103].w/steps)*steps))
+            local x = math.floor(((mouse.mx - obj.sections[103].x) / w) * steps) +1
+            seq[last_M][seq[last_M].selected].steps = x
+            update_seqgrid = true
+            update_seq = true
+            
+          elseif lb or rb then 
+            local w = ((math.floor(obj.sections[102].w/steps)*steps))
+            local x = math.floor(((mouse.mx - obj.sections[102].x) / w) * steps) +1
+            local y = math.floor((mouse.my - obj.sections[102].y) / (butt_h + 1)) +1
+            if x <= seq[last_M][seq[last_M].selected].steps and y <= 6 then
+              if y == 1 then
+                if rb then
+                  seq[last_M][seq[last_M].selected][x].targetslot = seq[last_M][seq[last_M].selected][x].targetslot - 1
+                  if seq[last_M][seq[last_M].selected][x].targetslot < 0 then
+                    seq[last_M][seq[last_M].selected][x].targetslot = #seq_step_table-1
+                  end
+                else
+                  seq[last_M][seq[last_M].selected][x].targetslot = seq[last_M][seq[last_M].selected][x].targetslot + 1
+                  if seq[last_M][seq[last_M].selected][x].targetslot > #seq_step_table-1 then
+                    seq[last_M][seq[last_M].selected][x].targetslot = 0
+                  end                 
                 end
-              else
-                seq[last_M][seq[last_M].selected][x].targetslot = seq[last_M][seq[last_M].selected][x].targetslot + 1
-                if seq[last_M][seq[last_M].selected][x].targetslot > #seq_step_table-1 then
-                  seq[last_M][seq[last_M].selected][x].targetslot = 0
-                end                 
-              end
-              update_seqgrid = true
-            elseif y == 2 then
-              if rb then
-                seq[last_M][seq[last_M].selected][x].stepmorphtime = seq[last_M][seq[last_M].selected][x].stepmorphtime - 1
-                if seq[last_M][seq[last_M].selected][x].stepmorphtime < 5 then
-                  seq[last_M][seq[last_M].selected][x].stepmorphtime = #sync_table
+                update_seqgrid = true
+              elseif y == 2 then
+                if rb then
+                  seq[last_M][seq[last_M].selected][x].stepmorphtime = seq[last_M][seq[last_M].selected][x].stepmorphtime - 1
+                  if seq[last_M][seq[last_M].selected][x].stepmorphtime < 5 then
+                    seq[last_M][seq[last_M].selected][x].stepmorphtime = #sync_table
+                  end
+                else
+                  seq[last_M][seq[last_M].selected][x].stepmorphtime = seq[last_M][seq[last_M].selected][x].stepmorphtime + 1
+                  if seq[last_M][seq[last_M].selected][x].stepmorphtime > #sync_table then
+                    seq[last_M][seq[last_M].selected][x].stepmorphtime = 5
+                  end                 
                 end
-              else
-                seq[last_M][seq[last_M].selected][x].stepmorphtime = seq[last_M][seq[last_M].selected][x].stepmorphtime + 1
-                if seq[last_M][seq[last_M].selected][x].stepmorphtime > #sync_table then
-                  seq[last_M][seq[last_M].selected][x].stepmorphtime = 5
-                end                 
-              end
-              update_seqgrid = true            
-            elseif y == 3 then
-              if rb then
-                seq[last_M][seq[last_M].selected][x].stepshape = seq[last_M][seq[last_M].selected][x].stepshape - 1
-                if seq[last_M][seq[last_M].selected][x].stepshape < 1 then
-                  seq[last_M][seq[last_M].selected][x].stepshape = #shape_table
+                update_seqgrid = true            
+              elseif y == 3 then
+                if rb then
+                  seq[last_M][seq[last_M].selected][x].stepshape = seq[last_M][seq[last_M].selected][x].stepshape - 1
+                  if seq[last_M][seq[last_M].selected][x].stepshape < 1 then
+                    seq[last_M][seq[last_M].selected][x].stepshape = #shape_table
+                  end
+                else
+                  seq[last_M][seq[last_M].selected][x].stepshape = seq[last_M][seq[last_M].selected][x].stepshape + 1
+                  if seq[last_M][seq[last_M].selected][x].stepshape > #shape_table then
+                    seq[last_M][seq[last_M].selected][x].stepshape = 1
+                  end                 
                 end
-              else
-                seq[last_M][seq[last_M].selected][x].stepshape = seq[last_M][seq[last_M].selected][x].stepshape + 1
-                if seq[last_M][seq[last_M].selected][x].stepshape > #shape_table then
-                  seq[last_M][seq[last_M].selected][x].stepshape = 1
-                end                 
-              end
-              update_seqgrid = true            
-            elseif y == 4 then
-              seq[last_M][seq[last_M].selected][x].steprebound = not seq[last_M][seq[last_M].selected][x].steprebound
-              update_seqgrid = true            
-            elseif y == 5 then
-              if rb then
-                seq[last_M][seq[last_M].selected][x].steplength = seq[last_M][seq[last_M].selected][x].steplength - 1
-                if seq[last_M][seq[last_M].selected][x].steplength < 5 then
-                  seq[last_M][seq[last_M].selected][x].steplength = #sync_table
+                update_seqgrid = true            
+              elseif y == 4 then
+                seq[last_M][seq[last_M].selected][x].steprebound = not seq[last_M][seq[last_M].selected][x].steprebound
+                update_seqgrid = true            
+              elseif y == 5 then
+                if rb then
+                  seq[last_M][seq[last_M].selected][x].steplength = seq[last_M][seq[last_M].selected][x].steplength - 1
+                  if seq[last_M][seq[last_M].selected][x].steplength < 5 then
+                    seq[last_M][seq[last_M].selected][x].steplength = #sync_table
+                  end
+                else
+                  seq[last_M][seq[last_M].selected][x].steplength = seq[last_M][seq[last_M].selected][x].steplength + 1
+                  if seq[last_M][seq[last_M].selected][x].steplength > #sync_table then
+                    seq[last_M][seq[last_M].selected][x].steplength = 5
+                  end                 
                 end
-              else
-                seq[last_M][seq[last_M].selected][x].steplength = seq[last_M][seq[last_M].selected][x].steplength + 1
-                if seq[last_M][seq[last_M].selected][x].steplength > #sync_table then
-                  seq[last_M][seq[last_M].selected][x].steplength = 5
-                end                 
-              end
-              update_seqgrid = true            
-            elseif y == 6 then
-              if rb then
-                seq[last_M][seq[last_M].selected][x].stepstartslot = seq[last_M][seq[last_M].selected][x].stepstartslot - 1
-                if seq[last_M][seq[last_M].selected][x].stepstartslot < 0 then
-                  seq[last_M][seq[last_M].selected][x].stepstartslot = #seq_step_table-1
+                update_seqgrid = true            
+              elseif y == 6 then
+                if rb then
+                  seq[last_M][seq[last_M].selected][x].stepstartslot = seq[last_M][seq[last_M].selected][x].stepstartslot - 1
+                  if seq[last_M][seq[last_M].selected][x].stepstartslot < 0 then
+                    seq[last_M][seq[last_M].selected][x].stepstartslot = #seq_step_table-1
+                  end
+                else
+                  seq[last_M][seq[last_M].selected][x].stepstartslot = seq[last_M][seq[last_M].selected][x].stepstartslot + 1
+                  if seq[last_M][seq[last_M].selected][x].stepstartslot > #seq_step_table-1 then
+                    seq[last_M][seq[last_M].selected][x].stepstartslot = 0
+                  end                 
                 end
-              else
-                seq[last_M][seq[last_M].selected][x].stepstartslot = seq[last_M][seq[last_M].selected][x].stepstartslot + 1
-                if seq[last_M][seq[last_M].selected][x].stepstartslot > #seq_step_table-1 then
-                  seq[last_M][seq[last_M].selected][x].stepstartslot = 0
-                end                 
-              end
-              update_seqgrid = true            
-            end          
+                update_seqgrid = true            
+              end          
+            end
           end
         end
-
+        
         --Seq select
         if MOUSE_click(obj.sections[104]) then
           local s = math.floor((mouse.mx - obj.sections[104].x) / (obj.sections[104].w/4)) + 1
@@ -4196,8 +4341,62 @@ end
           end
           update_gfx = true                  
         end
-      end
+      --end
 
+      --if seq_state == 1 or seq_state == 2 then
+
+        if MOUSE_click(obj.sections[121]) then
+          if seq_state == 1 then
+            seq_state = 2
+          else
+            seq_state = 1
+          end
+          update_gfx = true
+        end
+        
+        if seq_state == 2 then
+        
+          if MOUSE_click(obj.sections[123]) then mouse.context = 'printqualityslider' end
+          if mouse.context and mouse.context == 'printqualityslider' then
+             val = F_limit(MOUSE_slider(obj.sections[123]),0,1)
+             if val ~= nil then
+               print_quality = val
+               if print_quality < 0.1 then print_quality = 0.1 end
+             end
+             update_print = true
+          end      
+
+          if MOUSE_click(obj.sections[124]) then
+            print_lendiv = print_lendiv + 1
+            if print_lendiv > #sync_table then print_lendiv = #sync_table end
+            update_print = true
+          elseif MOUSE_click_RB(obj.sections[124]) then
+            print_lendiv = print_lendiv - 1
+            if print_lendiv < 1 then print_lendiv = 1 end
+            update_print = true
+          end
+
+          if MOUSE_click(obj.sections[125]) then
+            print_lenmult = print_lenmult + 1
+            if print_lenmult > 256 then print_lenmult = 256 end
+            update_print = true
+          elseif MOUSE_click_RB(obj.sections[125]) then
+            print_lenmult = print_lenmult - 1
+            if print_lenmult < 1 then print_lenmult = 1 end
+            update_print = true
+          end
+        
+          if MOUSE_click(obj.sections[126]) then
+            --PRINT SEQUENCE
+            local t = CalcSyncTime(print_lendiv) * print_lenmult
+            local s = CalcBarTime()/(128 * print_quality)
+            PrintEnvelopes(last_M, t, s)
+          end
+          
+        end
+        
+      end
+    
       if preset[last_M].morph_val ~= nil then
         last_morph_val = preset[last_M].morph_val
        else
@@ -4211,7 +4410,7 @@ end
     else
       --Settings
       local rt = reaper.time_precise()
-      RunSequences(rt)    
+      RunSequences()    
       
       local obj = GetObjects_Settings()
       local gui = GetGUI_vars()    
@@ -4317,29 +4516,26 @@ end
       
     end  
     
-    if chaos < 1 and chaosval % math.floor(1 + ((1-chaos) * chaos_limit)) ~= 0 then
-      --[[local running = false
-      for i = 1, #morph_time do
-        if morph_time[i] > 0 then
-          running = true
-          break
-        end
-      end
-      if running then]]
-        chaosval = chaosval + 1   
-        --update_morph_time = true
-      --end
+    if chaos < 1 and chaos_start == nil then
+      chaos_bt = CalcBarTime()/2
+      chaos_start = reaper.time_precise()
+    end
+    
+    if chaos < 1 and reaper.time_precise() < chaos_start then
     else
       for i = 1, #morph_time do
         if morph_time[i] > 0 then
-          ENGINE_SetParams(i)
+          ENGINE_SetParams(i, reaper.time_precise(), false)
         elseif morph_time_reset then
           morph_time_reset = false
           update_slots = true    
         end
         update_morph_time = true
       end  
-      chaosval = 1
+      if chaos == 1 then chaos_start = nil
+      elseif chaos_start ~= nil then
+        chaos_start = chaos_start + ((1-chaos) * chaos_bt)
+      end
     end      
         
     if not mouse.LB and not mouse.RB then mouse.context = nil end
@@ -5071,11 +5267,270 @@ end
     return seq
   end
     
+  ------------------------------------------------------------
+  
+  function PrintEnvelopes(lM, print_len, print_step)
+  
+    curpos = reaper.GetCursorPosition()
+  
+    if #preset[lM] > 0 then
+
+      local i
+      
+      --stop all sequences
+      for i = 1, 16 do
+        morph_time[i] = 0
+        seq[i].running = 0
+      end
+      chaos_start = nil
+      
+      for fxi = 1, #preset[lM] do
+        for p = 1, #preset[lM][fxi].param_actidx do
+        
+          local track = reaper.GetTrack(0,preset[lM][fxi].tracknumberOut-1)
+          local fx_num = preset[last_M][fxidx].fxnumberOut
+          local env = reaper.GetFXEnvelope(track, fx_num, preset[lM][fxi].param_actidx[p]-1, true)
+          preset[lM][fxi].params[preset[lM][fxi].param_actidx[p]].Env = env
+          _ = reaper.DeleteEnvelopePointRange(env, curpos, curpos + print_len)
+        
+        end
+      end
+      
+      --start/init sequence
+      seq[lM].running = seq[lM].selected
+      seq[lM].currentstep = 1
+      seq[lM].stepst = curpos
+      seq[lM].stepet = curpos + (CalcSyncTime(seq[lM][seq[lM].running][seq[lM].currentstep].steplength) * seq_speedmult[seq[lM][seq[lM].running].speedmult])
+      
+      preset[lM].settings_morphrebound = seq[lM][seq[lM].running][seq[lM].currentstep].steprebound
+      preset[lM].morph_shape = seq[lM][seq[lM].running][seq[lM].currentstep].stepshape
+    
+      morph_time[lM] = CalcSyncTime(seq[lM][seq[lM].running][seq[lM].currentstep].stepmorphtime) * seq_speedmult[seq[lM][seq[lM].running].speedmult]
+
+      local newsslot
+      if seq[lM][seq[lM].running][seq[lM].currentstep].stepstartslot < 9 then
+        newsslot = seq[lM][seq[lM].running][seq[lM].currentstep].stepstartslot
+      else
+        newsslot = seq[lM][seq[lM].running][seq[lM][seq[lM].running].steps].targetslot
+      end
+      
+      local neweslot
+      if seq[lM][seq[lM].running][seq[lM].currentstep].targetslot < 9 then
+        neweslot = seq[lM][seq[lM].running][seq[lM].currentstep].targetslot
+      else
+        neweslot = newsslot
+      end
+
+      morphtime[lM] = {st = curpos,
+                       et = curpos + morph_time[lM],
+                       sslot = newsslot,
+                       eslot = neweslot}
+
+      --loop through morph
+      local shape
+      if chaos < 1 or preset[lM].morph_shape == 3 then
+        shape = 1      
+      else
+        shape = 0            
+      end
+      
+      for rt = curpos, curpos + print_len, print_step do
+      
+        RunSequences(rt)
+      
+        if chaos < 1 and chaos_start == nil then
+          chaos_bt = CalcBarTime()/2
+          chaos_start = rt
+        end
+        
+        if chaos < 1 and rt < chaos_start then
+        else
+          for i = 1, #morph_time do
+            if morph_time[i] > 0 then
+              ENGINE_PrintParams(i, rt, shape)
+            elseif morph_time_reset then
+              morph_time_reset = false
+              --update_slots = true    
+            end
+            --update_morph_time = true
+          end  
+          if chaos == 1 then chaos_start = nil
+          elseif chaos_start ~= nil then
+            chaos_start = chaos_start + ((1-chaos) * chaos_bt)
+          end
+        end            
+      
+      end
+      
+      --disable sequence
+      seq[lM].running = 0
+      morph_time[lM] = 0
+      chaos_start = nil
+      
+      --sort points
+      for fxi = 1, #preset[lM] do
+        for p = 1, #preset[lM][fxi].param_actidx do
+        
+          local env = preset[lM][fxi].params[preset[lM][fxi].param_actidx[p]].Env 
+          reaper.Envelope_SortPoints(env)
+          preset[lM][fxi].params[preset[lM][fxi].param_actidx[p]].Env = nil
+        
+        end
+      end
+      
+      --refresh track display
+      reaper.TrackList_AdjustWindows(0)
+      reaper.UpdateArrange()
+      
+    end  
+  end
+  
+  ------------------------------------------------------------
+    
+    function ENGINE_PrintParams(last_M, rt, shape)
+    
+      local fxidx
+      local mp, mpv 
+      local resetmt = false
+  
+      if morphtime[last_M] ~= nil then
+        mp = F_limit((rt - morphtime[last_M].st) / ((morphtime[last_M].et - morphtime[last_M].st)),0,1)
+        mpv = CalcShapeVal(last_M, mp, rt - morphtime[last_M].st, (morphtime[last_M].et - morphtime[last_M].st))
+        preset[last_M].mp = mpv
+      end
+      
+      for fxidx = 1,preset[last_M].fxcnt do
+    
+        if preset[last_M] == nil then return end
+        if preset[last_M][fxidx].params == nil then return end
+        if preset[last_M][fxidx].S_params[preset[last_M].use_params] == nil then return end
+        if preset[last_M][fxidx].S_params[preset[last_M].use_params2] == nil then return end
+        if preset[last_M].morph_val == nil then return end
+        
+        local found = false
+        track = reaper.GetTrack(0,preset[last_M][fxidx].tracknumberOut-1)
+        _, fx_name = reaper.TrackFX_GetFXName( track, preset[last_M][fxidx].fxnumberOut, '' )
+        guid =  reaper.TrackFX_GetFXGUID( track, preset[last_M][fxidx].fxnumberOut )
+        tguid = reaper.GetTrackGUID(track)
+        
+        local track_num, fx_num
+        
+        if (preset[last_M][fxidx].tguid == tguid
+           and preset[last_M][fxidx].guid == guid
+           and preset[last_M][fxidx].fx_name == fx_name) then
+        
+          fx_num = preset[last_M][fxidx].fxnumberOut
+          found = true
+        
+        else 
+          --Search for plugin
+          found, track_num, fx_num = FindFX(preset[last_M][fxidx].tguid, preset[last_M][fxidx].guid, false)
+          if found then
+            track = reaper.GetTrack(0,track_num)
+            preset[last_M][fxidx].tracknumberOut = track_num+1
+            preset[last_M][fxidx].fxnumberOut = fx_num
+          end      
+        end
+        if found then
+            if preset[last_M][fxidx].param_actidx ~= nil then
+              if morph_time[last_M] == 0 then
+                for i = 1, math.min(#preset[last_M][fxidx].param_actidx, max_params_count) do
+                  --Add point to parameter envelope 
+                  --local env = reaper.GetFXEnvelope(track, fx_num, preset[last_M][fxidx].param_actidx[i]-1, true)
+                  local env = preset[last_M][fxidx].params[preset[last_M][fxidx].param_actidx[i]].Env
+                  _ = reaper.InsertEnvelopePoint(env,rt,
+                                          preset[last_M][fxidx].S_params[preset[last_M].use_params][preset[last_M][fxidx].param_actidx[i]].val 
+                                          + (preset[last_M][fxidx].S_params[preset[last_M].use_params2][preset[last_M][fxidx].param_actidx[i]].val 
+                                          - preset[last_M][fxidx].S_params[preset[last_M].use_params][preset[last_M][fxidx].param_actidx[i]].val) * preset[last_M].morph_val,
+                                          shape,0,false,true)
+                
+                end
+              else
+                for i = 1, math.min(#preset[last_M][fxidx].param_actidx, max_params_count) do
+    
+                  if morphtime[last_M] ~= nil then
+                    
+                    if mp >= 1 then
+                      if preset[last_M].settings_morphrebound then
+                        mp = 0
+                      else
+                        mp = 1
+                      end
+                      resetmt = true
+                    end
+                    if preset[last_M][fxidx].S_params[morphtime[last_M].sslot] ~= nil 
+                        and preset[last_M][fxidx].S_params[morphtime[last_M].eslot] ~= nil   then
+                        
+                      local val = preset[last_M][fxidx].S_params[morphtime[last_M].sslot][preset[last_M][fxidx].param_actidx[i]].val + 
+                                                (preset[last_M][fxidx].S_params[morphtime[last_M].eslot][preset[last_M][fxidx].param_actidx[i]].val 
+                                                - preset[last_M][fxidx].S_params[morphtime[last_M].sslot][preset[last_M][fxidx].param_actidx[i]].val) * mpv                      
+                      --Add point to parameter envelope 
+                      local env = reaper.GetFXEnvelope(track, fx_num, preset[last_M][fxidx].param_actidx[i]-1, true)
+                      _ = reaper.InsertEnvelopePoint(env,rt,
+                                              preset[last_M][fxidx].S_params[preset[last_M].use_params][preset[last_M][fxidx].param_actidx[i]].val + 
+                                              (val - preset[last_M][fxidx].S_params[preset[last_M].use_params][preset[last_M][fxidx].param_actidx[i]].val) * preset[last_M].morph_val,
+                                              shape,0,false,true)
+                                            
+                    end
+                  end
+                            
+                end          
+              end
+            end          
+        end
+      end
+      if resetmt then
+        if not preset[last_M].settings_morphloop then
+          morph_time[last_M] = 0
+          morph_time_reset = true
+          if preset[last_M].settings_morphrebound then        
+            preset[last_M].use_params2 = morphtime[last_M].sslot
+          else
+            preset[last_M].use_params2 = morphtime[last_M].eslot        
+          end
+          --ENGINE_SetParams(last_M, reaper.time_precise(), false) --ensure final morph settings are sent to plugin
+        else
+          --if not seq[last_M].running then
+            if preset[last_M].settings_morphrebound then
+              if seq[last_M].running > 0 then
+                morph_time[last_M] = CalcSyncTime(seq[last_M][seq[last_M].running][seq[last_M].currentstep].stepmorphtime) * seq_speedmult[seq[last_M][seq[last_M].running].speedmult]
+              else
+                morph_time[last_M] = preset[last_M].morph_fader
+              end
+              morphtime[last_M].st = morphtime[last_M].et
+              morphtime[last_M].et = morphtime[last_M].et + morph_time[last_M]
+            else
+              if seq[last_M].running > 0 then
+                morph_time[last_M] = CalcSyncTime(seq[last_M][seq[last_M].running][seq[last_M].currentstep].stepmorphtime) * seq_speedmult[seq[last_M][seq[last_M].running].speedmult]
+              else
+                morph_time[last_M] = preset[last_M].morph_fader
+              end
+              morphtime[last_M].st = morphtime[last_M].et
+              morphtime[last_M].et = morphtime[last_M].et + morph_time[last_M]
+              local sslot = morphtime[last_M].sslot
+              if mp > 0.5 then
+                preset[last_M].use_params2 = morphtime[last_M].eslot
+              else
+                preset[last_M].use_params2 = morphtime[last_M].sslot
+              end
+              morphtime[last_M].sslot = morphtime[last_M].eslot
+              morphtime[last_M].eslot = sslot
+            end
+          --end
+        end
+        gfx_forceupdate = true
+      end
+      
+    end
+  
+  ---------------------------------------------------
+  
   function INITALL()  
   
     win_w = 800
     win_h = 450
-
+    max_params_count = 200
+  
     morphtime = {}
     morph_time = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
     morph_time_reset = false
@@ -5115,6 +5570,7 @@ end
     update_seqplay = false
     update_disp = false
     update_misc = false
+    update_print = false
     pick_state = false
     
     seq_state = 0
@@ -5132,6 +5588,7 @@ end
     chaos_limit = 30
     chaos = 1
     chaosval = 1
+    chaos_start = nil
     triggerhold = 1
     th_morphtime = {}
     th_seq = {}
@@ -5141,7 +5598,11 @@ end
     --morphratepos = 0.5
     --last_morphrate = morphrate
     settings_docked = 0
-
+  
+    print_quality = 1
+    print_lendiv = 19
+    print_lenmult = 4
+  
     loadsettings()
     Lokasenna_Window_At_Center(gfx1.main_w,gfx1.main_h) 
     mouse = {}
@@ -5165,53 +5626,7 @@ end
     obj = GetObjects()
   
   end
-  
-  ------------------------------------------------------------
-  
-  function PrintEnvelopeForParameter(lM, fxidx, pidx, seqid)
-  
-    local time_iterator = CalcBeatTime() / 32
-    local edit_pos = reaper.GetCursorPosition()
-    local time_pos = edit_pos
-    local section_pos = 0
-    local env, sslot, eslot
     
-    --Step
-    local step = 1
-    for step = 1, seq[lM][seqid].steps do
-      local stepdata = seq[lM][seqid][step]
-      if stepdata.stepstartslot == 9 then
-        sslot = 1 --change this
-      else
-        sslot = stepdata.stepstartslot
-      end
-      eslot = stepdata.targetslot 
-      
-      section_pos = 0
-      while time_pos <= edit_pos + CalcSyncTime(stepdata.steplength) * seq_speedmult[seq[lM][seqid].speedmult] do
-    
-        mp = (time_pos - morphtime[last_M].st) / (morphtime[last_M].et - morphtime[last_M].st) 
-        mpv = CalcShapeVal(last_M, mp)
-    
-    
-        time_pos = time_pos + time_iterator
-        section_pos = section_pos + time_iterator
-        if section_pos >= CalcSyncTime(stepdata.morphsteptime) * seq_speedmult[seq[lM][seqid].speedmult] then
-          section_pos = 0
-          if stepdata.morphrebound then
-          
-          else
-            local tslot = eslot
-            eslot = sslot
-            sslot = tslot          
-          end
-        end
-      end
-      edit_pos = edit_pos + CalcSyncTime(stepdata.steplength) * seq_speedmult[seq[lM][seqid].speedmult]
-    end
-  
-  end
-  
   ------------------------------------------------------------
 
   SCRIPT_NAME = "LBXChaosEngine"
