@@ -1,45 +1,10 @@
-  -- * ReaScript Name: LBX Chaos Engine
-
+-- * ReaScript Name: LBX Chaos Engine
 -- @version 0.92
 -- @author LBX - with original code from mpl
 -- built upon mpl_Randomize_Track_FX_Parameters script
+
 -- Also includes freely available code: Pickle/Unpickle (Steve Dekorte/Snooks), RoundRect (mwe/Lokasenna)
 
-----------------------------------------------
-----------------------------------------------
-
---ORIGINAL MPL HEADER:
-
--- @version 1.20
--- @author mpl
--- @changelog
---   + Add 'Get all parameters' button
---   + Add 'Get all parameters except protected' button
---   + Add 'render', "upsampl" to protected table
-
---[[
-   * Lua script for Cockos REAPER
-   * Author: Michael Pilyavskiy (mpl)
-   * Author URI: http://forum.cockos.com/member.php?u=70694
-   * Licence: GPL v3
-  ]]
-  
-  
---[[ changelog
-    - 1.20
-      + Add 'Get all parameters' button
-      + Add 'Get all parameters except protected' button
-      + Add 'render', "upsampl" to protected table
-    - 1.11
-       # ReaPack verioning fix
-       + Store only picked parameters
-       - Ignore protected table
-    - 1.0
-      + init release
-    - 0.1
-      + alpha without GUI
-]]
-  
   --------------------------------------------
   --------------------------------------------
   
