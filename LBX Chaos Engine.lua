@@ -5144,9 +5144,19 @@ end
     if n == nil then
       return ""
     else
-      return string.match(n, ':(.+)%(')
+      return nz(string.match(n, ':(.+)%('),'')
     end
     
+  end
+  
+  function nz(val, nilval)
+  
+    if val == nil then
+      return nilval
+    else
+      return val
+    end
+  
   end
   
   function INIT()
