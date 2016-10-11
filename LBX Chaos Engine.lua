@@ -5144,7 +5144,7 @@ end
     if n == nil then
       return ""
     else
-      return nz(string.match(n, ':(.+)%('),'')
+      return nz(string.match(n, ':(.+)%('),n)
     end
     
   end
